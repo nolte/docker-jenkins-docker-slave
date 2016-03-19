@@ -1,0 +1,31 @@
+# Dockerfile
+FROM hypriot/rpi-java:1.7.0-jdk
+
+ENV JENKINS_SLAVE_NODE=node-js
+ENV JENKINS_MASTER_HOST=jenkinshost
+ENV JENKINS_MASTER_PORT=8080
+
+RUN apt-get update && apt-get install git -y
+
+RUN wget https://downloads.hypriot.com/docker-hypriot_1.10.3-1_armhf.deb
+
+RUN dpkg -i docker-hypriot_1.10.3-1_armhf.deb
+
+WORKDIR /opt/jenkins-slave
+
+ADD ./slave.jar /tmp/slave.jar
+RUN chmod u+x /tmp/slave.jar
+#RUN chown  -R 1000
+
+
+RUN  mkdir /usr/local/share/ca-certificates/docker-dev-cert
+COPY ./registry-cert/devdockerCA.crt /usr/local/share/ca-certificates/docker-dev-cert
+COPY ./registry-cert/domain.crt /usr/local/share/ca-certificates/docker-dev-cert
+
+RUN update-ca-certificates
+
+
+ADD ./startSlave.sh /opt/jenkins-slave/startSlave.sh
+
+ENTRYPOINT ["sh", "/opt/jenkins-slave/startSlave.sh"]
+CMD [""]
