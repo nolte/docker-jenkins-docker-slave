@@ -1,0 +1,17 @@
+# Dockerfile
+FROM hypriot/rpi-java:1.7.0-jdk
+
+ENV JENKINS_SLAVE_NODE=node-js
+
+RUN apt-get update && apt-get install git -y
+
+WORKDIR /opt/jenkins-slave
+
+ADD ./slave.jar /tmp/slave.jar
+RUN chmod u+x /tmp/slave.jar
+#RUN chown  -R 1000
+
+ADD ./startSlave.sh /opt/jenkins-slave/startSlave.sh
+
+ENTRYPOINT ["sh", "/opt/jenkins-slave/startSlave.sh"]
+CMD [""]
