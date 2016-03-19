@@ -2,6 +2,8 @@
 FROM hypriot/rpi-java:1.7.0-jdk
 
 ENV JENKINS_SLAVE_NODE=node-js
+ENV JENKINS_MASTER_HOST=jenkinshost
+ENV JENKINS_MASTER_PORT=8080
 
 RUN apt-get update && apt-get install git -y
 
