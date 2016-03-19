@@ -23,6 +23,13 @@ ADD ./slave.jar /tmp/slave.jar
 RUN chmod u+x /tmp/slave.jar
 #RUN chown  -R 1000
 
+
+RUN  mkdir /usr/local/share/ca-certificates/docker-dev-cert
+COPY ./registry-cert/devdockerCA.crt /usr/local/share/ca-certificates/docker-dev-cert
+COPY ./registry-cert/domain.crt /usr/local/share/ca-certificates/docker-dev-cert
+
+RUN update-ca-certificates
+
 ADD ./startSlave.sh /opt/jenkins-slave/startSlave.sh
 
 ENTRYPOINT ["sh", "/opt/jenkins-slave/startSlave.sh"]
