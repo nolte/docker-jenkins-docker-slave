@@ -1,14 +1,16 @@
-# Dockerfile
-FROM aratto/jenkins-swarm-slave
+FROM java:8-jdk
 
+ENV JENKINS_SWARM_VERSION 2.0
+ENV JENKINS_SLAVE_HOME /var/lib/jenkins_slave
+ENV JENKINS_JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64
 
-## install docker 
+RUN useradd -c "Jenkins Slave user" -d $JENKINS_SLAVE_HOME -m jenkins_slave
+RUN curl --create-dirs -sSLo \
+    /usr/share/jenkins/swarm-client-$JENKINS_SWARM_VERSION-jar-with-dependencies.jar \
+    http://maven.jenkins-ci.org/content/repositories/releases/org/jenkins-ci/plugins/swarm-client/$JENKINS_SWARM_VERSION/swarm-client-$JENKINS_SWARM_VERSION-jar-with-dependencies.jar && \
+    chmod 755 /usr/share/jenkins
 
-RUN apt-get update &&  apt-get install apt-transport-https ca-certificates -y
-RUN apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
-RUN echo "deb https://apt.dockerproject.org/repo debian-jessie main" > /etc/apt/sources.list.d/docker.list
-RUN apt-get update
-RUN apt-cache policy docker-engine
-RUN apt-get install docker-engine -y
+COPY jenkins-slave-entrypoint.sh /
+ENTRYPOINT ["/jenkins-slave-entrypoint.sh"]
 
-
+VOLUME $JENKINS_SLAVE_HOME
