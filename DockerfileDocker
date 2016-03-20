@@ -1,5 +1,5 @@
 # Dockerfile
-FROM aratto/jenkins-swarm-slave
+FROM nolte/jenkins-slave
 
 
 ## install docker 
