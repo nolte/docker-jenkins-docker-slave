@@ -5,6 +5,8 @@ ENV JENKINS_SWARM_VERSION 2.0
 ENV JENKINS_SLAVE_HOME /var/lib/jenkins_slave
 ENV JENKINS_JAVA_HOME /usr/lib/jvm/java-7-openjdk-armhf
 
+RUN apt-get update && apt-get install curl git -y
+
 RUN useradd -c "Jenkins Slave user" -d $JENKINS_SLAVE_HOME -m jenkins_slave
 RUN curl --create-dirs -sSLo \
     /usr/share/jenkins/swarm-client-$JENKINS_SWARM_VERSION-jar-with-dependencies.jar \
@@ -12,6 +14,7 @@ RUN curl --create-dirs -sSLo \
     chmod 755 /usr/share/jenkins
 
 COPY jenkins-slave-entrypoint.sh /
+RUN chmod u+x /jenkins-slave-entrypoint.sh
 ENTRYPOINT ["/jenkins-slave-entrypoint.sh"]
 
 VOLUME $JENKINS_SLAVE_HOME
