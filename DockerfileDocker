@@ -11,4 +11,6 @@ RUN apt-get update
 RUN apt-cache policy docker-engine
 RUN apt-get install docker-engine -y
 
+RUN usermod -a -G docker jenkins_slave
+
 
